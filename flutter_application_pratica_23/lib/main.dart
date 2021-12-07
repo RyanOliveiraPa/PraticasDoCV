@@ -34,11 +34,13 @@ class Menu {
         nome: 'Notebook',
       ),
       ItemMenu(
-        url:'https://images.pexels.com/photos/213780/pexels-photo-213780.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
+        url:
+            'https://images.pexels.com/photos/213780/pexels-photo-213780.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
         nome: 'Bolo',
       ),
       ItemMenu(
-        url:'https://images.pexels.com/photos/213798/pexels-photo-213798.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
+        url:
+            'https://images.pexels.com/photos/213798/pexels-photo-213798.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
         nome: 'Torre e aerogerador',
       ),
     ];
@@ -110,7 +112,7 @@ class Corpo extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
       shrinkWrap: true,
-      padding: EdgeInsets.all(8),
+      padding: EdgeInsets.only(left: 25, top: 2.5, right: 25),
       itemCount: produtos.length,
       itemBuilder: (BuildContext context, int indice) {
         return Container(
@@ -124,7 +126,7 @@ class Corpo extends StatelessWidget {
               width: 70,
             ),
             title: Text(
-              '${produtos[indice].nome}',
+              '${this.produtos[indice].nome}',
             ),
             subtitle: Text(
               'R\$ ${this.produtos[indice].preco.toStringAsFixed(2)}',
@@ -135,20 +137,22 @@ class Corpo extends StatelessWidget {
             ),
             trailing: Icon(Icons.arrow_forward),
             onTap: () {
-           /*   Navigator.push(
+              Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => RotaGenerica()),
+                MaterialPageRoute(
+                    builder: (context) => RotaDetalhes(
+                        titulo: '${this.produtos[indice].nome}',
+                        descricao: '${this.produtos[indice].descricao}',
+                        preco: produtos[indice].preco,
+                        url: '${this.produtos[indice].url}')),
               );
-          */  },
+            },
           ),
         );
       },
     );
   }
 }
-
-
-
 
 class SegundaRota extends StatefulWidget {
   const SegundaRota({Key? key}) : super(key: key);
@@ -189,7 +193,7 @@ class SegundaRotaState extends State<SegundaRota> {
         padding: new EdgeInsets.only(left: 25, right: 25),
         children: [
           Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(8),
             child: DropdownButton(
               value: this.itemSelecionado,
               items: this.listaItensMenu,
@@ -222,7 +226,7 @@ class SegundaRotaState extends State<SegundaRota> {
           Padding(
             padding: EdgeInsets.all(8),
             child: TextField(
-              controller: descricaoController,
+              controller: this.descricaoController,
               decoration: InputDecoration(
                 suffixIcon: IconButton(
                   onPressed: () => this.descricaoController.clear(),
@@ -249,7 +253,7 @@ class SegundaRotaState extends State<SegundaRota> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(130, 30, 130, 100),
+            padding: const EdgeInsets.fromLTRB(100, 50, 100, 50),
             child: ElevatedButton(
               child: Icon(Icons.add),
               onPressed: () {
@@ -260,12 +264,90 @@ class SegundaRotaState extends State<SegundaRota> {
                   preco: double.parse(this.precoController.text),
                 );
                 Navigator.pop(context, produto);
-                //Navigator.push(context, MaterialPageRoute(builder: (context) => RotaGenerica([])));
               },
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class RotaDetalhes extends StatelessWidget {
+  final String titulo;
+  final String descricao;
+  final double preco;
+  final String url;
+  RotaDetalhes({
+    required this.titulo,
+    required this.descricao,
+    required this.preco,
+    required this.url,
+  });
+  @override
+  Widget build(BuildContext context) {
+    
+    return Container(
+        color: Colors.grey[100],
+        margin: EdgeInsets.fromLTRB(30, 5, 30, 15),
+        child: Container(
+          padding: EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.all(4),
+                child: Image(
+                  image: NetworkImage(this.url),
+                  height: 200,
+                  width: 400,
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(4),
+                child: Text(
+                  this.titulo,
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.amber),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(4),
+                child: Text(
+                  this.descricao,
+                  maxLines: 100,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 14, color: Colors.purple),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  'R\$ ${this.preco.toStringAsFixed(2)}',
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              ButtonBar(
+                alignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  TextButton(
+                    child: Text('Voltar para Primeira Rota'),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => PrimeiraRota()),
+                      );
+                    },
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      
     );
   }
 }
